@@ -3,14 +3,13 @@
  */
 package io.metersphere.track.service.utils;
 
-import io.metersphere.api.dto.automation.RunModeConfig;
 import io.metersphere.base.domain.LoadTestReportWithBLOBs;
-import io.metersphere.base.domain.TestPlanLoadCase;
 import io.metersphere.base.domain.TestPlanLoadCaseWithBLOBs;
 import io.metersphere.base.mapper.LoadTestReportMapper;
 import io.metersphere.base.mapper.TestPlanLoadCaseMapper;
 import io.metersphere.commons.exception.MSException;
 import io.metersphere.commons.utils.LogUtil;
+import io.metersphere.dto.RunModeConfigDTO;
 import io.metersphere.performance.request.RunTestPlanRequest;
 import io.metersphere.performance.service.PerformanceTestService;
 
@@ -18,12 +17,12 @@ import java.util.concurrent.Callable;
 
 public class SerialExecTask<T> implements Callable<T> {
     private RunTestPlanRequest request;
-    private RunModeConfig config;
+    private RunModeConfigDTO config;
     private PerformanceTestService performanceTestService;
     private TestPlanLoadCaseMapper testPlanLoadCaseMapper;
     private LoadTestReportMapper loadTestReportMapper;
 
-    public SerialExecTask(PerformanceTestService performanceTestService, TestPlanLoadCaseMapper testPlanLoadCaseMapper,LoadTestReportMapper loadTestReportMapper, RunTestPlanRequest request, RunModeConfig config) {
+    public SerialExecTask(PerformanceTestService performanceTestService, TestPlanLoadCaseMapper testPlanLoadCaseMapper,LoadTestReportMapper loadTestReportMapper, RunTestPlanRequest request, RunModeConfigDTO config) {
         this.performanceTestService = performanceTestService;
         this.testPlanLoadCaseMapper = testPlanLoadCaseMapper;
         this.loadTestReportMapper = loadTestReportMapper;
