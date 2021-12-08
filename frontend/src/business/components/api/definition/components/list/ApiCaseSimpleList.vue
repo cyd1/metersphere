@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div>
+  <span>
+    <span>
       <el-link type="primary" style="float:right;margin-top: 5px" @click="open">{{ $t('commons.adv_search.title') }}
       </el-link>
 
@@ -204,7 +204,7 @@
         :current-page.sync="currentPage"
         :page-size.sync="pageSize"
         :total="total"/>
-    </div>
+    </span>
 
     <api-case-list @showExecResult="showExecResult" @refreshCase="setRunning" :currentApi="selectCase" ref="caseList"
                    @stop="stop" @reLoadCase="initTable"/>
@@ -226,7 +226,7 @@
                :visible.sync="resVisible" class="api-import" destroy-on-close @close="resVisible=false">
       <ms-request-result-tail :response="response" ref="debugResult"/>
     </el-dialog>
-  </div>
+  </span>
 
 </template>
 
@@ -394,7 +394,7 @@ export default {
       currentPage: 1,
       pageSize: 10,
       total: 0,
-      screenHeight: 'calc(100vh - 250px)',//屏幕高度
+      screenHeight: 'calc(100vh - 220px)',//屏幕高度
       environmentId: undefined,
       selectAll: false,
       unSelection: [],
@@ -408,6 +408,7 @@ export default {
   },
   props: {
     currentProtocol: String,
+    currentVersion: String,
     apiDefinitionId: String,
     selectNodeIds: Array,
     activeDom: String,
@@ -444,7 +445,8 @@ export default {
       this.operators = this.simpleOperators;
       this.buttons = this.simpleButtons;
     }
-
+    // 切换tab之后版本查询
+    this.condition.versionId = this.currentVersion;
     this.initTable();
     // 通知过来的数据跳转到编辑
     if (this.$route.query.caseId) {
@@ -453,6 +455,7 @@ export default {
       });
     }
     this.getVersionOptions();
+    this.checkVersionEnable();
   },
   watch: {
     selectNodeIds() {
@@ -465,6 +468,10 @@ export default {
       this.selectAll = false;
       this.unSelection = [];
       this.selectDataCounts = 0;
+      this.initTable();
+    },
+    currentVersion() {
+      this.condition.versionId = this.currentVersion;
       this.initTable();
     },
     trashEnable() {
@@ -1160,6 +1167,18 @@ export default {
         });
       }
     },
+    checkVersionEnable() {
+      if (!this.projectId) {
+        return;
+      }
+      if (hasLicense()) {
+        this.$get('/project/version/enable/' + this.projectId, response => {
+          if (!response.data) {
+            this.fields = this.fields.filter(f => f.id !== 'versionId');
+          }
+        });
+      }
+    }
   },
 };
 </script>
